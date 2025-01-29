@@ -1,9 +1,11 @@
 import {
   Column,
   DataType,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { User } from 'src/user/models/user.models';
 
 interface GroupAttributes {
   name: string;
@@ -31,4 +33,10 @@ export class Group extends Model<Group, GroupAttributes> {
     allowNull: false,
   })
   level: string;
+
+  @HasMany(() => User, {
+    onDelete: 'CASCADE',
+    hooks: true,
+  })
+  users: User[];
 }

@@ -10,10 +10,12 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ImageValidationPipe } from 'src/pipes/image-validation.pipe';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -24,6 +26,7 @@ import { JwtService } from '@nestjs/jwt';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { AuthGuard } from 'src/guard/auth.guard';
 
 @ApiTags('Book')
 @Controller('book')
@@ -34,6 +37,7 @@ export class BookController {
   ) { }
 
   @ApiOperation({ summary: 'Create a new book' })
+  @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -54,6 +58,7 @@ export class BookController {
   })
   @Post('/create')
   @UseInterceptors(FilesInterceptor('files', 2))
+  @ApiBearerAuth('JWT-auth')
   async create(
     @Body() bookDto: BookDto,
     @UploadedFiles() files: Array<Express.Multer.File>
@@ -62,28 +67,31 @@ export class BookController {
   }
 
   @ApiOperation({ summary: 'Get book by ID' })
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('/getById/:id')
+  @ApiBearerAuth('JWT-auth')
   getById(@Param('id') id: number) {
     return this.bookService.getById(id);
   }
 
   @ApiOperation({ summary: 'Get all books' })
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('/')
+  @ApiBearerAuth('JWT-auth')
   getAll() {
     return this.bookService.getAll();
   }
 
   @ApiOperation({ summary: 'Get books with pagination' })
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('pagination/:page')
+  @ApiBearerAuth('JWT-auth')
   pagination(@Param('page') page: number) {
     return this.bookService.pagination(page);
   }
 
   // @ApiOperation({ summary: 'Update book by ID' })
-  // // @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   // @Put('/:id')
   // update(
   //   @Param('id') id: number,
@@ -93,8 +101,9 @@ export class BookController {
   // }
 
   @ApiOperation({ summary: 'Delete book' })
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Delete(':id')
+  @ApiBearerAuth('JWT-auth')
   deleteBook(@Param('id') id: number) {
     return this.bookService.delete(id);
   }

@@ -7,6 +7,7 @@ import {
 import { Group } from './models/group.models';
 import { InjectModel } from '@nestjs/sequelize';
 import { GroupDto } from './dto/group.dto';
+import { User } from 'src/user/models/user.models';
 
 @Injectable()
 export class GroupService {
@@ -44,6 +45,21 @@ export class GroupService {
     try {
       const groups = await this.groupRepository.findOne({
         where: { id },
+      });
+      if (!groups) {
+        throw new NotFoundException('Group not found');
+      }
+      return groups;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getGroupUsers(id: number): Promise<object> {
+    try {
+      const groups = await this.groupRepository.findOne({
+        where: { id },
+        include: { model: User }
       });
       if (!groups) {
         throw new NotFoundException('Group not found');

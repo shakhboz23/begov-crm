@@ -1,32 +1,27 @@
 import {
   BelongsTo,
-  BelongsToMany,
   Column,
   DataType,
-  HasMany,
+  ForeignKey,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { Group } from 'src/group/models/group.models';
 
 interface UserAttributes {
-  name: string;
-  surname: string;
+  fullName: string;
+  phone: string;
   email: string;
-  // phone: string;
-  current_role: string;
-  bio: string;
-  is_active: boolean;
-  is_online: boolean;
-  last_activity: Date;
-  image: string;
+  login: string;
   hashed_password: string;
-  hashed_refresh_token: string;
-}
-
-export enum RoleName {
-  student = 'student',
-  teacher = 'teacher',
-  super_admin = 'super_admin'
+  group_id: number;
+  paymentStatus: boolean;
+  homework: number;
+  vocabulary: number;
+  results: any[];
+  attendanceDay1: boolean;
+  attendanceDay2: boolean;
+  attendanceDay3: boolean;
 }
 
 @Table({ tableName: 'user' })
@@ -40,74 +35,85 @@ export class User extends Model<User, UserAttributes> {
 
   @Column({
     type: DataType.STRING,
-    // unique: true,
+    allowNull: false,
   })
-  name: string;
+  fullName: string;
 
   @Column({
     type: DataType.STRING,
-    // unique: true,
+    allowNull: false,
   })
-  surname: string;
+  phone: string;
 
   @Column({
     type: DataType.STRING,
-    // unique: true,
   })
   email: string;
 
-  // @Column({
-  //   type: DataType.STRING,
-  //   unique: true,
-  // })
-  // phone: string;
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+    allowNull: false,
+  })
+  login: string;
 
   @Column({
     type: DataType.STRING,
-  })
-  bio: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    defaultValue: false,
-  })
-  is_active: boolean;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    defaultValue: false,
-  })
-  is_online: boolean;
-
-  @Column({
-    type: DataType.STRING,
-  })
-  current_role: string;
-
-  @Column({
-    type: DataType.STRING,
+    allowNull: false,
   })
   hashed_password: string;
 
+  // @Column({
+  //   type: DataType.STRING,
+  // })
+  // groupName: string;
+
+  @ForeignKey(() => Group)
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
+    allowNull: false,
   })
-  hashed_refresh_token: string;
+  group_id: number;
+
+  @BelongsTo(() => Group)
+  group: Group[];
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.BOOLEAN,
+    defaultValue: false,
   })
-  activation_link: string;
+  paymentStatus: boolean;
 
   @Column({
-    type: DataType.DATE,
-    allowNull: true,
+    type: DataType.INTEGER,
   })
-  last_activity: Date;
+  homework: number;
 
   @Column({
-    type: DataType.STRING,
-    allowNull: true,
+    type: DataType.INTEGER,
   })
-  image: string;
+  vocabulary: number;
+
+  @Column({
+    type: DataType.JSONB,
+  })
+  results: any[];
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  attendanceDay1: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  attendanceDay2: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  attendanceDay3: boolean;
 }
