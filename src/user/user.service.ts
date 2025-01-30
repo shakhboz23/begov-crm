@@ -113,7 +113,6 @@ export class UserService {
   }
 
   async getById(id: number): Promise<object> {
-    console.log('getById', id);
     try {
       if (!id) {
         throw new NotFoundException('User not found!');
@@ -163,7 +162,6 @@ export class UserService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      console.log(login)
       const isExistLogin = login ? await this.userRepository.findOne({
         where: { login }
       }) : null;

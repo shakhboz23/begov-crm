@@ -11,7 +11,6 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
-    console.log(req.headers);
     const auth_header = req.headers.authorization;
     if (!auth_header) {
       throw new UnauthorizedException({

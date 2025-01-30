@@ -63,6 +63,7 @@ export class BookController {
     @Body() bookDto: BookDto,
     @UploadedFiles() files: Array<Express.Multer.File>
   ): Promise<object> {
+    console.log("Hi")
     return this.bookService.create(bookDto, files);
   }
 

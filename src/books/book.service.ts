@@ -23,6 +23,12 @@ export class BookService {
     try {
       let img: any, pdf: any;
       const { name } = bookDto;
+      const exist = await this.bookRepository.findOne({
+        where: { name },
+      });
+      if (exist) {
+        throw new BadRequestException('Already created');
+      }
       if (files.length == 2) {
         img = await this.fileService.createFile(
           files[0],
@@ -32,15 +38,8 @@ export class BookService {
           files[1],
           'raw',
         );
-        console.log(img.url, pdf.url);
       }
-      const exist = await this.bookRepository.findOne({
-        where: { name },
-      });
-      if (exist) {
-        throw new BadRequestException('Already created');
-      }
-      const book = await this.bookRepository.create({ ...bookDto, img: img.url, pdf: pdf.url });
+      const book = await this.bookRepository.create({ ...bookDto, img: img?.url, pdf: pdf?.url });
       return book;
     } catch (error) {
       throw new BadRequestException(error.message);
