@@ -37,7 +37,7 @@ export class BookController {
   ) { }
 
   @ApiOperation({ summary: 'Create a new book' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -46,25 +46,22 @@ export class BookController {
         name: {
           type: 'string',
         },
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
+        file: {
+          type: 'string',
+          format: 'binary',
         },
       },
     },
   })
   @Post('/create')
-  @UseInterceptors(FilesInterceptor('files', 2))
-  @ApiBearerAuth('JWT-auth')
+  @UseInterceptors(FileInterceptor('file'))
+  // @ApiBearerAuth('JWT-auth')
   async create(
     @Body() bookDto: BookDto,
-    @UploadedFiles() files: Array<Express.Multer.File>
+    @UploadedFile(new ImageValidationPipe()) file: Express.Multer.File
   ): Promise<object> {
     console.log("Hi")
-    return this.bookService.create(bookDto, files);
+    return this.bookService.create(bookDto, file);
   }
 
   @ApiOperation({ summary: 'Get book by ID' })

@@ -18,10 +18,9 @@ export class BookService {
 
   async create(
     bookDto: BookDto,
-    files: any,
+    file: any,
   ): Promise<object> {
     try {
-      let img: any, pdf: any;
       const { name } = bookDto;
       const exist = await this.bookRepository.findOne({
         where: { name },
@@ -29,18 +28,17 @@ export class BookService {
       if (exist) {
         throw new BadRequestException('Already created');
       }
-      if (files.length == 2) {
-        img = await this.fileService.createFile(
-          files[0],
-          'image',
-        );
-        pdf = await this.fileService.createFile(
-          files[1],
-          'raw',
-        );
+      if (!file) {
+        throw new BadRequestException('Please upload a file');
       }
-      const book = await this.bookRepository.create({ ...bookDto, img: img?.url, pdf: pdf?.url });
-      return book;
+      let pdf: any = await this.fileService.createFile(
+        file,
+        'raw',
+      );
+      if (!pdf?.url) {
+        throw new BadRequestException('Please upload a file');
+      }
+      return this.bookRepository.create({ ...bookDto, pdf: pdf?.url });
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -120,7 +118,7 @@ export class BookService {
       if (!book) {
         throw new NotFoundException('Book not found');
       }
-      await this.fileService.deleteFile(book.img);
+      // await this.fileService.deleteFile(book.img);
       await this.fileService.deleteFile(book.pdf);
       book.destroy();
       return {

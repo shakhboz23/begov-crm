@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { UpdateDto } from './dto/update.dto';
 import { UserDto } from './dto/user.dto';
+import { TeacherDto } from './dto/teacher.dto';
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
   ) { }
-  async register(
+  async registerStudent(
     userDto: UserDto,
   ): Promise<object> {
     try {
@@ -37,6 +38,38 @@ export class UserService {
       }
       user = await this.userRepository.create({
         ...userDto,
+        hashed_password,
+      });
+      const { access_token, refresh_token } = await generateToken(
+        { id: user.id },
+        this.jwtService,
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Registered successfully',
+        data: user,
+        token: access_token,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async registerTeacher(
+    teacherDto: TeacherDto,
+  ): Promise<object> {
+    try {
+      let { login, password } = teacherDto;
+      const hashed_password: string = await hash(password, 7);
+      let user = await this.userRepository.findOne({
+        where: { login }
+      });
+      if (user) {
+        throw new BadRequestException("This login already exists on system, please try another login");
+      }
+      user = await this.userRepository.create({
+        ...teacherDto,
         hashed_password,
       });
       const { access_token, refresh_token } = await generateToken(
@@ -247,12 +280,12 @@ export class UserService {
 
   async createDefaultUser() {
     try {
-      await this.register({
-        fullName: process.env.INITIAL_NAME,
-        password: process.env.INITIAL_EMAIL,
+      await this.registerTeacher({
+        fullName: 'admin',
+        password: 'admin',
         phone: "+998991422303",
         login: 'admin',
-        group_id: 1,
+        // group_id: 1,
         paymentStatus: false,
         homework: 0,
         vocabulary: 0,

@@ -34,13 +34,11 @@ export class User extends Model<User, UserAttributes> {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
   fullName: string;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
   })
   phone: string;
 
@@ -65,7 +63,6 @@ export class User extends Model<User, UserAttributes> {
   @ForeignKey(() => Group)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
   })
   group_id: number;
 

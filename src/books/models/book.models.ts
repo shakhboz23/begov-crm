@@ -7,7 +7,6 @@ import {
 
 interface BookAttributes {
   name: string;
-  img: string;
   pdf: string;
 }
 
@@ -26,11 +25,6 @@ export class Book extends Model<Book, BookAttributes> {
     unique: true,
   })
   name: string;
-
-  @Column({
-    type: DataType.STRING,
-  })
-  img: string;
 
   @Column({
     type: DataType.STRING,

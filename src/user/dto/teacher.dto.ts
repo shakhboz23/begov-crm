@@ -9,22 +9,22 @@ import {
     IsString,
 } from 'class-validator';
 
-export class UserDto {
+export class TeacherDto {
     @ApiProperty({
         example: 'John Doe',
         description: 'Full name of user',
     })
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
-    fullName?: string;
+    fullName: string;
 
     @ApiProperty({
         example: '+998991422303',
         description: 'Phone number of user',
     })
-    @IsOptional()
+    @IsNotEmpty()
     @IsPhoneNumber()
-    phone?: string;
+    phone: string;
     
     @ApiProperty({
         example: 'Login',
@@ -41,14 +41,6 @@ export class UserDto {
     @IsNotEmpty()
     @IsString()
     password: string;
-
-    @ApiProperty({
-        example: 1,
-        description: 'Group name of user',
-    })
-    @IsNotEmpty()
-    @IsNumber()
-    group_id: number;
 
     @ApiProperty({
         example: false,

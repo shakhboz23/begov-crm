@@ -19,6 +19,7 @@ import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserDto } from './dto/user.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
+import { TeacherDto } from './dto/teacher.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -29,11 +30,20 @@ export class UserController {
   ) { }
 
   @ApiOperation({ summary: 'Registration a new user' })
-  @Post('register')
-  async register(
+  @Post('register/student')
+  async registerStudent(
     @Body() userDto: UserDto,
   ) {
-    const data = await this.userService.register(userDto);
+    const data = await this.userService.registerStudent(userDto);
+    return data;
+  }
+
+  @ApiOperation({ summary: 'Registration a new user' })
+  @Post('register/teacher')
+  async registerTeacher(
+    @Body() teacherDto: TeacherDto,
+  ) {
+    const data = await this.userService.registerTeacher(teacherDto);
     return data;
   }
 
