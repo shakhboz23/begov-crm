@@ -28,9 +28,9 @@ export class GroupController {
   ) { }
 
   @ApiOperation({ summary: 'Create a new group' })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Post('/create')
-  @ApiBearerAuth('JWT-auth')
+  // @ApiBearerAuth('JWT-auth')
   async create(
     @Body() groupDto: GroupDto,
     @Headers() headers: Record<string, string>,
