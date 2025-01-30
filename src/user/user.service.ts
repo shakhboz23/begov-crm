@@ -3,22 +3,15 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
-  Res,
 } from '@nestjs/common';
 import { User } from './models/user.models';
 import { InjectModel } from '@nestjs/sequelize';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-import { RegisterUserDto } from './dto/register.dto';
-import { generateToken, writeToCookie } from '../utils/token';
+import { generateToken } from '../utils/token';
 import { LoginUserDto } from './dto/login.dto';
-import { Op } from 'sequelize';
 import { MailService } from '../mail/mail.service';
-import { compareSync, hash } from 'bcryptjs';
-import * as uuid from 'uuid';
-import { Sequelize } from 'sequelize-typescript';
+import { hash } from 'bcryptjs';
 import * as bcrypt from 'bcrypt';
-import { NewPasswordDto } from './dto/new-password.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { UpdateDto } from './dto/update.dto';
 import { UserDto } from './dto/user.dto';
@@ -78,7 +71,7 @@ export class UserService {
   ): Promise<object> {
     try {
       const user = await this.userRepository.findOne({
-        where: { email: loginUserDto.email },
+        where: { login: loginUserDto.login },
       });
 
       if (!user) {
@@ -225,33 +218,33 @@ export class UserService {
 
   async googleAuth(credential: string) {
     console.log(credential, 'credential');
-    try {
-      const payload: any = await this.verify(credential);
-      console.log(payload);
-      const data: any = {
-        name: payload.given_name,
-        surname: payload.family_name,
-        password: credential,
-        email: payload.email,
-        role: 'student',
-      };
-      const is_user = await this.userRepository.findOne({
-        where: {
-          email: payload.email,
-        },
-      });
-      let user: any;
-      console.log(is_user);
-      if (is_user) {
-        user = await this.login(data, 'googleauth');
-      } else {
-        user = await this.register(data);
-      }
-      return user;
-    } catch (error) {
-      console.log(error);
-      throw new BadRequestException(error);
-    }
+    // try {
+    //   const payload: any = await this.verify(credential);
+    //   console.log(payload);
+    //   const data: any = {
+    //     name: payload.given_name,
+    //     surname: payload.family_name,
+    //     password: credential,
+    //     email: payload.email,
+    //     role: 'student',
+    //   };
+    //   const is_user = await this.userRepository.findOne({
+    //     where: {
+    //       email: payload.email,
+    //     },
+    //   });
+    //   let user: any;
+    //   console.log(is_user);
+    //   if (is_user) {
+    //     user = await this.login(data, 'googleauth');
+    //   } else {
+    //     user = await this.register(data);
+    //   }
+    //   return user;
+    // } catch (error) {
+    //   console.log(error);
+    //   throw new BadRequestException(error);
+    // }
   }
 
   async createDefaultUser() {
@@ -259,9 +252,7 @@ export class UserService {
       await this.register({
         fullName: process.env.INITIAL_NAME,
         password: process.env.INITIAL_EMAIL,
-        // role: RoleName.super_admin,
         phone: "+998991422303",
-        email: process.env.INITIAL_EMAIL,
         login: 'admin',
         group_id: 1,
         paymentStatus: false,

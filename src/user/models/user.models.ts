@@ -11,7 +11,6 @@ import { Group } from 'src/group/models/group.models';
 interface UserAttributes {
   fullName: string;
   phone: string;
-  email: string;
   login: string;
   hashed_password: string;
   group_id: number;
@@ -44,11 +43,6 @@ export class User extends Model<User, UserAttributes> {
     allowNull: false,
   })
   phone: string;
-
-  @Column({
-    type: DataType.STRING,
-  })
-  email: string;
 
   @Column({
     type: DataType.STRING,

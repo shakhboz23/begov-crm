@@ -25,15 +25,6 @@ export class UserDto {
     @IsNotEmpty()
     @IsPhoneNumber()
     phone: string;
-
-    @ApiProperty({
-        example: 'example@gmail.com',
-        description: 'Email of user',
-        required: false,
-    })
-    @IsOptional()
-    @IsEmail()
-    email?: string;
     
     @ApiProperty({
         example: 'Login',

@@ -8,17 +8,15 @@ export class MailService {
 
     async sendUserConfirmation(user: User): Promise<void> {
         const url = `${process.env.API_HOST}/verify-email?activation_link=${user.id}`;
-        const data = await this.mailerService.sendMail({
-            to: user.email,
-            subject: "Welcome to IlmNur App! Confirm your email!",
-            template: './confirmation',
-            context: {
-                name: user.fullName,
-                url,
-            },
-        });
-
-        console.log(data);
+        // const data = await this.mailerService.sendMail({
+        //     to: user.email,
+        //     subject: "Welcome to IlmNur App! Confirm your email!",
+        //     template: './confirmation',
+        //     context: {
+        //         name: user.fullName,
+        //         url,
+        //     },
+        // });
     };
 
     async sendUserActivationLink(activation_link: string, email: string): Promise<void> {
