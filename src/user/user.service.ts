@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from './models/user.models';
+import { User, userRole } from './models/user.models';
 import { InjectModel } from '@nestjs/sequelize';
 import { JwtService } from '@nestjs/jwt';
 import { generateToken } from '../utils/token';
@@ -38,6 +38,7 @@ export class UserService {
       }
       user = await this.userRepository.create({
         ...userDto,
+        role: userRole.student,
         hashed_password,
       });
       const { access_token, refresh_token } = await generateToken(
@@ -70,6 +71,7 @@ export class UserService {
       }
       user = await this.userRepository.create({
         ...teacherDto,
+        role: userRole.teacher,
         hashed_password,
       });
       const { access_token, refresh_token } = await generateToken(

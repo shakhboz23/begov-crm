@@ -8,6 +8,11 @@ import {
 } from 'sequelize-typescript';
 import { Group } from 'src/group/models/group.models';
 
+export enum userRole {
+  student = 'student',
+  teacher = 'teacher',
+}
+
 interface UserAttributes {
   fullName: string;
   phone: string;
@@ -21,6 +26,7 @@ interface UserAttributes {
   attendanceDay1: boolean;
   attendanceDay2: boolean;
   attendanceDay3: boolean;
+  role: userRole;
 }
 
 @Table({ tableName: 'user' })
@@ -107,4 +113,10 @@ export class User extends Model<User, UserAttributes> {
     defaultValue: false,
   })
   attendanceDay3: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: userRole.student,
+  })
+  role: userRole;
 }
